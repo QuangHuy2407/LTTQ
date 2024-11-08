@@ -46,7 +46,7 @@
             this.txtThanhTien = new System.Windows.Forms.TextBox();
             this.btnSua = new System.Windows.Forms.Button();
             this.btnXoa = new System.Windows.Forms.Button();
-            this.btnThoat = new System.Windows.Forms.Button();
+            this.btnReport = new System.Windows.Forms.Button();
             this.cbbMaSP = new System.Windows.Forms.ComboBox();
             this.btnThem = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
@@ -139,7 +139,7 @@
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvDanhSach.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvDanhSach.Location = new System.Drawing.Point(55, 288);
-            this.dgvDanhSach.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dgvDanhSach.Margin = new System.Windows.Forms.Padding(4);
             this.dgvDanhSach.Name = "dgvDanhSach";
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
@@ -167,7 +167,7 @@
             // txtMaHDB
             // 
             this.txtMaHDB.Location = new System.Drawing.Point(151, 118);
-            this.txtMaHDB.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtMaHDB.Margin = new System.Windows.Forms.Padding(4);
             this.txtMaHDB.Name = "txtMaHDB";
             this.txtMaHDB.Size = new System.Drawing.Size(132, 22);
             this.txtMaHDB.TabIndex = 8;
@@ -175,7 +175,7 @@
             // txtKhuyenMai
             // 
             this.txtKhuyenMai.Location = new System.Drawing.Point(151, 228);
-            this.txtKhuyenMai.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtKhuyenMai.Margin = new System.Windows.Forms.Padding(4);
             this.txtKhuyenMai.Name = "txtKhuyenMai";
             this.txtKhuyenMai.Size = new System.Drawing.Size(132, 22);
             this.txtKhuyenMai.TabIndex = 9;
@@ -183,7 +183,7 @@
             // txtSoLuong
             // 
             this.txtSoLuong.Location = new System.Drawing.Point(429, 228);
-            this.txtSoLuong.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtSoLuong.Margin = new System.Windows.Forms.Padding(4);
             this.txtSoLuong.Name = "txtSoLuong";
             this.txtSoLuong.Size = new System.Drawing.Size(132, 22);
             this.txtSoLuong.TabIndex = 11;
@@ -191,7 +191,7 @@
             // txtTenSP
             // 
             this.txtTenSP.Location = new System.Drawing.Point(733, 121);
-            this.txtTenSP.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtTenSP.Margin = new System.Windows.Forms.Padding(4);
             this.txtTenSP.Name = "txtTenSP";
             this.txtTenSP.Size = new System.Drawing.Size(132, 22);
             this.txtTenSP.TabIndex = 12;
@@ -199,7 +199,7 @@
             // txtThanhTien
             // 
             this.txtThanhTien.Location = new System.Drawing.Point(733, 224);
-            this.txtThanhTien.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtThanhTien.Margin = new System.Windows.Forms.Padding(4);
             this.txtThanhTien.Name = "txtThanhTien";
             this.txtThanhTien.Size = new System.Drawing.Size(132, 22);
             this.txtThanhTien.TabIndex = 13;
@@ -207,7 +207,7 @@
             // btnSua
             // 
             this.btnSua.Location = new System.Drawing.Point(322, 567);
-            this.btnSua.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnSua.Margin = new System.Windows.Forms.Padding(4);
             this.btnSua.Name = "btnSua";
             this.btnSua.Size = new System.Drawing.Size(100, 28);
             this.btnSua.TabIndex = 15;
@@ -217,28 +217,28 @@
             // btnXoa
             // 
             this.btnXoa.Location = new System.Drawing.Point(512, 567);
-            this.btnXoa.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnXoa.Margin = new System.Windows.Forms.Padding(4);
             this.btnXoa.Name = "btnXoa";
             this.btnXoa.Size = new System.Drawing.Size(100, 28);
             this.btnXoa.TabIndex = 16;
             this.btnXoa.Text = "Xóa";
             this.btnXoa.UseVisualStyleBackColor = true;
             // 
-            // btnThoat
+            // btnReport
             // 
-            this.btnThoat.Location = new System.Drawing.Point(823, 567);
-            this.btnThoat.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.btnThoat.Name = "btnThoat";
-            this.btnThoat.Size = new System.Drawing.Size(100, 28);
-            this.btnThoat.TabIndex = 17;
-            this.btnThoat.Text = "Thoát";
-            this.btnThoat.UseVisualStyleBackColor = true;
+            this.btnReport.Location = new System.Drawing.Point(823, 567);
+            this.btnReport.Margin = new System.Windows.Forms.Padding(4);
+            this.btnReport.Name = "btnReport";
+            this.btnReport.Size = new System.Drawing.Size(100, 28);
+            this.btnReport.TabIndex = 17;
+            this.btnReport.Text = "Report";
+            this.btnReport.UseVisualStyleBackColor = true;
             // 
             // cbbMaSP
             // 
             this.cbbMaSP.FormattingEnabled = true;
             this.cbbMaSP.Location = new System.Drawing.Point(429, 119);
-            this.cbbMaSP.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cbbMaSP.Margin = new System.Windows.Forms.Padding(4);
             this.cbbMaSP.Name = "cbbMaSP";
             this.cbbMaSP.Size = new System.Drawing.Size(132, 24);
             this.cbbMaSP.TabIndex = 18;
@@ -247,7 +247,7 @@
             // btnThem
             // 
             this.btnThem.Location = new System.Drawing.Point(151, 567);
-            this.btnThem.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btnThem.Margin = new System.Windows.Forms.Padding(4);
             this.btnThem.Name = "btnThem";
             this.btnThem.Size = new System.Drawing.Size(100, 28);
             this.btnThem.TabIndex = 14;
@@ -268,7 +268,7 @@
             // txtDonGia
             // 
             this.txtDonGia.Location = new System.Drawing.Point(948, 121);
-            this.txtDonGia.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtDonGia.Margin = new System.Windows.Forms.Padding(4);
             this.txtDonGia.Name = "txtDonGia";
             this.txtDonGia.Size = new System.Drawing.Size(132, 22);
             this.txtDonGia.TabIndex = 20;
@@ -287,7 +287,7 @@
             // txtTongTien
             // 
             this.txtTongTien.Location = new System.Drawing.Point(813, 506);
-            this.txtTongTien.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtTongTien.Margin = new System.Windows.Forms.Padding(4);
             this.txtTongTien.Name = "txtTongTien";
             this.txtTongTien.Size = new System.Drawing.Size(152, 22);
             this.txtTongTien.TabIndex = 22;
@@ -314,7 +314,7 @@
             this.Controls.Add(this.txtDonGia);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.cbbMaSP);
-            this.Controls.Add(this.btnThoat);
+            this.Controls.Add(this.btnReport);
             this.Controls.Add(this.btnXoa);
             this.Controls.Add(this.btnSua);
             this.Controls.Add(this.btnThem);
@@ -331,7 +331,7 @@
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form6";
             this.Text = "Chi Tiết Hóa Đơn";
             ((System.ComponentModel.ISupportInitialize)(this.dgvDanhSach)).EndInit();
@@ -357,7 +357,7 @@
         private System.Windows.Forms.TextBox txtThanhTien;
         private System.Windows.Forms.Button btnSua;
         private System.Windows.Forms.Button btnXoa;
-        private System.Windows.Forms.Button btnThoat;
+        private System.Windows.Forms.Button btnReport;
         private System.Windows.Forms.ComboBox cbbMaSP;
         private System.Windows.Forms.Button btnThem;
         private System.Windows.Forms.Label label8;

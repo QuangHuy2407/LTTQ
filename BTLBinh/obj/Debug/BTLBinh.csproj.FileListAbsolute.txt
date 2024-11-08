@@ -97,3 +97,4 @@ D:\Quang Huy\New folder\demo-\BTLBinh\obj\Debug\BTLBinh.csproj.CoreCompileInputs
 D:\Quang Huy\New folder\demo-\BTLBinh\obj\Debug\BTLBinh.exe
 D:\Quang Huy\New folder\demo-\BTLBinh\obj\Debug\BTLBinh.pdb
 D:\Quang Huy\New folder\demo-\BTLBinh\obj\Debug\BTLBinh.MenuItems.resources
+D:\Quang Huy\New folder\demo-\BTLBinh\obj\Debug\BTLBinh.Form9.resources

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -182,15 +183,9 @@ namespace BTLBinh
             }
         }
 
-        private void buttonColor() // Đang lỗi 
+        private void buttonColor(Button btn) 
         {
-            if (checkBan01 == true)
-            {
-                btBan01.ForeColor = Color.Yellow;
-            } else if (checkBan02 == true)
-            {
-                btBan02.ForeColor = Color.Yellow;
-            }
+            btn.BackColor = Color.Yellow;
         }
 
         // Phương thức dùng để hiển thị dữ liệu hóa đơn lên các control
@@ -349,6 +344,121 @@ namespace BTLBinh
             }
         }
 
+        public string TextBoxData
+        {
+            get { return txtTongTien.Text; }
+        }
+
+        private void Payment_ButtonClicked(object sender, EventArgs e)
+        {
+            // Hành động khi nhận được thông báo từ Form2
+            SaveToCsdl();
+            MessageBox.Show("Nút ở Form payment đã được nhấn!");
+        }
+
+        private void SaveToCsdl()
+        {
+            var dataProcess = new DataProcess(); // Khởi tạo DataProcess
+            string maHDB = txtMaHoaDon.Text;
+            string maNV = txtMaNhanVien.Text;
+            string maKH = txtMaKhachHang.Text;
+            decimal tongTien;
+
+            // Kiểm tra và chuyển đổi giá trị từ TextBox tổng tiền
+            if (!decimal.TryParse(txtTongTien.Text, out tongTien))
+            {
+                MessageBox.Show("Tổng tiền không hợp lệ!");
+                return;
+            }
+            DateTime ngayBan = DateTime.Now;
+
+            // Lấy thông tin chi tiết từ DataGridView
+            List<(string maSP, int soLuong, decimal thanhTien, float khuyenMai)> chiTietHDB = new List<(string, int, decimal, float)>();
+            foreach (DataGridViewRow row in dgv_hoaDon.Rows)
+            {
+                if (row.Cells["SoLuong"].Value != null && row.Cells["ThanhTien"].Value != null && row.Cells["KhuyenMai"].Value != null)
+                {
+                    string tenSP = row.Cells["SanPham"].Value.ToString(); // Tên sản phẩm
+                    int soLuong;
+                    decimal thanhTien;
+                    float khuyenMai;
+
+                    // Kiểm tra và chuyển đổi kiểu dữ liệu an toàn
+                    if (!int.TryParse(row.Cells["SoLuong"].Value.ToString(), out soLuong) ||
+                        !decimal.TryParse(row.Cells["ThanhTien"].Value.ToString(), out thanhTien) ||
+                        !float.TryParse(row.Cells["KhuyenMai"].Value.ToString(), out khuyenMai))
+                    {
+                        MessageBox.Show("Dữ liệu trong DataGridView không hợp lệ!");
+                        return;
+                    }
+
+                    // Kiểm tra xem tên sản phẩm có trong Dictionary không
+                    if (columnMappings.ContainsValue(tenSP))
+                    {
+                        string maSP = columnMappings.FirstOrDefault(x => x.Value == tenSP).Key; // Lấy mã sản phẩm từ Dictionary
+
+                        chiTietHDB.Add((maSP, soLuong, thanhTien, khuyenMai));
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Sản phẩm '{tenSP}' không tồn tại trong hệ thống.");
+                        return;
+                    }
+                }
+            }
+
+            // Sử dụng Transaction để đảm bảo tính toàn vẹn dữ liệu
+            using (SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-6C4ON0I\SQLEXPRESS;Initial Catalog=LTTQ;Integrated Security=True;"))
+            {
+                connection.Open();
+                SqlTransaction transaction = connection.BeginTransaction();
+
+                try
+                {
+                    // Câu lệnh SQL để thêm vào bảng HOADONBAN với tham số
+                    string insertHoaDonQuery = "INSERT INTO HOADONBAN (MaHDB, MaNV, MaKH, TongTien, NgayBan) " +
+                                               "VALUES (@MaHDB, @MaNV, @MaKH, @TongTien, @NgayBan)";
+                    using (SqlCommand cmd = new SqlCommand(insertHoaDonQuery, connection, transaction))
+                    {
+                        cmd.Parameters.AddWithValue("@MaHDB", maHDB);
+                        cmd.Parameters.AddWithValue("@MaNV", maNV);
+                        cmd.Parameters.AddWithValue("@MaKH", maKH);
+                        cmd.Parameters.AddWithValue("@TongTien", tongTien);
+                        cmd.Parameters.AddWithValue("@NgayBan", ngayBan);
+
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // Câu lệnh SQL để thêm vào bảng CHITIETHDB với tham số
+                    foreach (var item in chiTietHDB)
+                    {
+                        string insertChiTietQuery = "INSERT INTO CHITIETHDB (MaHDB, MaSP, SoLuong, ThanhTien, KhuyenMai) " +
+                                                    "VALUES (@MaHDB, @MaSP, @SoLuong, @ThanhTien, @KhuyenMai)";
+                        using (SqlCommand cmd = new SqlCommand(insertChiTietQuery, connection, transaction))
+                        {
+                            cmd.Parameters.AddWithValue("@MaHDB", maHDB);
+                            cmd.Parameters.AddWithValue("@MaSP", item.maSP);
+                            cmd.Parameters.AddWithValue("@SoLuong", item.soLuong);
+                            cmd.Parameters.AddWithValue("@ThanhTien", item.thanhTien);
+                            cmd.Parameters.AddWithValue("@KhuyenMai", item.khuyenMai);
+
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+
+                    // Commit transaction nếu thành công
+                    transaction.Commit();
+                    MessageBox.Show("Thanh toán thành công!");
+                    SetupDataGridView(); // Làm mới DataGridView
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    MessageBox.Show("Có lỗi xảy ra trong quá trình thanh toán: " + ex.Message);
+                }
+            }
+        }
+
 
         //------------------------------------------------------------------------------------------
 
@@ -365,67 +475,76 @@ namespace BTLBinh
             if (dialogResult == DialogResult.Yes)
             {
                 // Nếu chọn Yes, thực hiện lưu thông tin
-                if (lbSoBan.Text == "Bàn số 01")
+                if (lbSoBan.Text == "Bàn số 01" && txtMaHoaDon.Text != "")
                 {
                     UpdateHoaDon(hoaDon01);
                     SaveDataToList(hoaDonList1);
                     checkBan01 = true;
+                    buttonColor(btBan01);
                     MessageBox.Show("Lưu thành công");
                 }
-                else if (lbSoBan.Text == "Bàn số 02")
+                else if (lbSoBan.Text == "Bàn số 02" && txtMaHoaDon.Text != "")
                 {
                     UpdateHoaDon(hoaDon02);
                     SaveDataToList(hoaDonList2);
                     checkBan02 = true;
+                    buttonColor(btBan02);
                     MessageBox.Show("Lưu thành công");
                 }
-                else if (lbSoBan.Text == "Bàn số 03")
+                else if (lbSoBan.Text == "Bàn số 03" && txtMaHoaDon.Text != "")
                 {
                     UpdateHoaDon(hoaDon03);
                     SaveDataToList(hoaDonList3);
                     checkBan03 = true;
+                    buttonColor(btBan03);
                     MessageBox.Show("Lưu thành công");
                 }
-                else if (lbSoBan.Text == "Bàn số 04")
+                else if (lbSoBan.Text == "Bàn số 04" && txtMaHoaDon.Text != "")
                 {
                     UpdateHoaDon(hoaDon04);
                     SaveDataToList(hoaDonList4);
                     checkBan04 = true;
+                    buttonColor(btBan04);
                     MessageBox.Show("Lưu thành công");
                 }
-                else if (lbSoBan.Text == "Bàn số 05")
+                else if (lbSoBan.Text == "Bàn số 05" && txtMaHoaDon.Text != "")
                 {
                     UpdateHoaDon(hoaDon05);
                     SaveDataToList(hoaDonList5);
                     checkBan05 = true;
+                    buttonColor(btBan05);
                     MessageBox.Show("Lưu thành công");
                 }
-                else if (lbSoBan.Text == "Bàn số 06")
+                else if (lbSoBan.Text == "Bàn số 06" && txtMaHoaDon.Text != "")
                 {
                     UpdateHoaDon(hoaDon06);
                     SaveDataToList(hoaDonList6);
                     checkBan06 = true;
+                    buttonColor(btBan06);
                     MessageBox.Show("Lưu thành công");
                 }
-                else if (lbSoBan.Text == "Bàn số 07")
+                else if (lbSoBan.Text == "Bàn số 07" && txtMaHoaDon.Text != "")
                 {
                     UpdateHoaDon(hoaDon07);
                     SaveDataToList(hoaDonList7);
                     checkBan07 = true;
+                    buttonColor(btBan07);
                     MessageBox.Show("Lưu thành công");
                 }
-                else if (lbSoBan.Text == "Bàn số 08")
+                else if (lbSoBan.Text == "Bàn số 08" && txtMaHoaDon.Text != "")
                 {
                     UpdateHoaDon(hoaDon08);
                     SaveDataToList(hoaDonList8);
                     checkBan08 = true;
+                    buttonColor(btBan08);
                     MessageBox.Show("Lưu thành công");
                 }
-                else if (lbSoBan.Text == "Bàn số 09")
+                else if (lbSoBan.Text == "Bàn số 09" && txtMaHoaDon.Text != "")
                 {
                     UpdateHoaDon(hoaDon09);
                     SaveDataToList(hoaDonList9);
                     checkBan09 = true;
+                    buttonColor(btBan09);
                     MessageBox.Show("Lưu thành công");
                 }
             }
@@ -448,6 +567,7 @@ namespace BTLBinh
             if (checkBan01 == true)
             {
                 LoadHoaDon(hoaDon01, hoaDonList1);
+                CalculateTotalAmount();
             }
         }
 
@@ -460,6 +580,7 @@ namespace BTLBinh
             if (checkBan02 == true)
             {
                 LoadHoaDon(hoaDon02, hoaDonList2);
+                CalculateTotalAmount();
             }
         }
 
@@ -472,6 +593,7 @@ namespace BTLBinh
             if (checkBan03 == true)
             {
                 LoadHoaDon(hoaDon03, hoaDonList3);
+                CalculateTotalAmount();
             }
         }
 
@@ -484,6 +606,7 @@ namespace BTLBinh
             if (checkBan04 == true)
             {
                 LoadHoaDon(hoaDon04, hoaDonList4);
+                CalculateTotalAmount();
             }
         }
 
@@ -496,6 +619,7 @@ namespace BTLBinh
             if (checkBan05 == true)
             {
                 LoadHoaDon(hoaDon05, hoaDonList5);
+                CalculateTotalAmount();
             }
         }
 
@@ -508,6 +632,7 @@ namespace BTLBinh
             if (checkBan06 == true)
             {
                 LoadHoaDon(hoaDon06, hoaDonList6);
+                CalculateTotalAmount();
             }
         }
 
@@ -520,6 +645,7 @@ namespace BTLBinh
             if (checkBan07 == true)
             {
                 LoadHoaDon(hoaDon07, hoaDonList7);
+                CalculateTotalAmount();
             }
         }
 
@@ -532,6 +658,7 @@ namespace BTLBinh
             if (checkBan08 == true)
             {
                 LoadHoaDon(hoaDon08, hoaDonList8);
+                CalculateTotalAmount();
             }
         }
 
@@ -544,6 +671,7 @@ namespace BTLBinh
             if (checkBan09 == true)
             {
                 LoadHoaDon(hoaDon09, hoaDonList9);
+                CalculateTotalAmount();
             }
         }
 
@@ -695,6 +823,22 @@ namespace BTLBinh
             else
             {
                 MessageBox.Show("Vui lòng chọn một dòng để xóa.");
+            }
+        }
+
+        private void btYeuCauThanhToan_Click(object sender, EventArgs e)
+        {
+            // Kiểm tra nếu ô tổng tiền có giá trị lớn hơn 0
+            if (decimal.TryParse(txtTongTien.Text, out decimal tongTien) && tongTien > 0)
+            {
+                Payment payment = new Payment(txtTongTien.Text);
+                payment.ButtonClicked += Payment_ButtonClicked;
+                payment.Show();
+            }
+            else
+            {
+                // Hiển thị thông báo cho người dùng nếu tổng tiền không hợp lệ hoặc <= 0
+                MessageBox.Show("Tổng tiền phải lớn hơn 0 để thực hiện thanh toán!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
