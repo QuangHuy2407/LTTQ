@@ -36,6 +36,16 @@ namespace BTLBinh
         HoaDon hoaDon08;
         HoaDon hoaDon09;
 
+        private List<OrderItem> hoaDonList1 = new List<OrderItem>();
+        private List<OrderItem> hoaDonList2 = new List<OrderItem>();
+        private List<OrderItem> hoaDonList3 = new List<OrderItem>();
+        private List<OrderItem> hoaDonList4 = new List<OrderItem>();
+        private List<OrderItem> hoaDonList5 = new List<OrderItem>();
+        private List<OrderItem> hoaDonList6 = new List<OrderItem>();
+        private List<OrderItem> hoaDonList7 = new List<OrderItem>();
+        private List<OrderItem> hoaDonList8 = new List<OrderItem>();
+        private List<OrderItem> hoaDonList9 = new List<OrderItem>();
+
         public Order()
         {
             InitializeComponent();
@@ -52,16 +62,16 @@ namespace BTLBinh
             MenuStripHelper.ApplyHoverEffect(tienIchToolStripMenuItem);
             MenuStripHelper.ApplyHoverEffect(troGiupToolStripMenuItem);
 
-            hoaDon01 = new HoaDon(null,DateTime.Now,null,null,null);
-            hoaDon02 = new HoaDon(null, DateTime.Now, null, null, null);
-            hoaDon03 = new HoaDon(null, DateTime.Now, null, null, null);
-            hoaDon04 = new HoaDon(null, DateTime.Now, null, null, null);
-            hoaDon05 = new HoaDon(null, DateTime.Now, null, null, null);
-            hoaDon06 = new HoaDon(null, DateTime.Now, null, null, null);
-            hoaDon07 = new HoaDon(null, DateTime.Now, null, null, null);
-            hoaDon07 = new HoaDon(null, DateTime.Now, null, null, null);
-            hoaDon08 = new HoaDon(null, DateTime.Now, null, null, null);
-            hoaDon09 = new HoaDon(null, DateTime.Now, null, null, null);
+            hoaDon01 = new HoaDon(null,null,null,null);
+            hoaDon02 = new HoaDon(null, null, null, null);
+            hoaDon03 = new HoaDon(null, null, null, null);
+            hoaDon04 = new HoaDon(null, null, null, null);
+            hoaDon05 = new HoaDon(null, null, null, null);
+            hoaDon06 = new HoaDon(null, null, null, null);
+            hoaDon07 = new HoaDon(null, null, null, null);
+            hoaDon07 = new HoaDon(null, null, null, null);
+            hoaDon08 = new HoaDon(null, null, null, null);
+            hoaDon09 = new HoaDon(null, null, null, null);
 
             dataProcess = new DataProcess();
 
@@ -71,7 +81,8 @@ namespace BTLBinh
 
         private void Order_Load(object sender, EventArgs e)
         {
-            addDataGridView();
+            
+            dgv_hoaDon.CellEndEdit += dgv_hoaDon_CellEndEdit_1;
         }
 
         private void danhMucToolStripMenuItem_Click(object sender, EventArgs e)
@@ -119,6 +130,25 @@ namespace BTLBinh
         //-------------------------------------------------------------------------------------------
         // Phần dưới này là các phương thức
 
+        private Dictionary<string, string> columnMappings = new Dictionary<string, string>
+        {
+            { "SP001", "Cà phê đen" },
+            { "SP002", "Cà phê sữa" },
+            { "SP003", "Trà sữa trân châu" },
+            { "SP004", "Sinh tố dâu" },
+            { "SP005", "Nước cam ép" },
+            { "SP006", "Soda chanh" },
+            { "SP007", "Bánh ngọt dâu" },
+            { "SP008", "Bánh mì thịt" },
+            { "SP009", "Pizza phô mai" },
+            { "SP010", "Salad rau củ" },
+            { "SP011", "Hamburger bò" },
+            { "SP012", "Kem dừa" },
+            { "SP013", "Nước ép táo" },
+            { "SP014", "Cà phê đá xay" },
+            { "SP015", "Trà sữa matcha" }
+        };
+
         private void SetupDataGridView()
         {
             // Xóa tất cả các cột và hàng hiện tại nếu có
@@ -131,10 +161,6 @@ namespace BTLBinh
             dgv_hoaDon.Columns.Add("ThanhTien", "Thành tiền");
             dgv_hoaDon.Columns.Add("KhuyenMai", "Khuyến mãi");
 
-            // Thêm dữ liệu mẫu vào DataGridView
-            dgv_hoaDon.Rows.Add("Cà phê", 2, 50000, "Giảm 10%");
-            dgv_hoaDon.Rows.Add("Trà sữa", 3, 60000, "Giảm 20%");
-            dgv_hoaDon.Rows.Add("Bánh mì", 5, 25000, "Không có khuyến mãi");
         }
 
         private void ResetControlsInGroupBox(GroupBox groupBox)
@@ -168,38 +194,54 @@ namespace BTLBinh
         }
 
         // Phương thức dùng để hiển thị dữ liệu hóa đơn lên các control
-        private void LoadHoaDon(HoaDon hoaDon)
+        private void LoadHoaDon(HoaDon hoaDon, List<OrderItem> hoaDonList)
         {
             txtMaHoaDon.Text = hoaDon.MaHoaDon;
-            dtpNgayVao.Value = hoaDon.NgayVao;
             txtMaNhanVien.Text = hoaDon.MaNhanVien;
             txtMaKhachHang.Text = hoaDon.MaKhachHang;
-            txtTenKhachHang.Text = hoaDon.TenKhachHang;
+
+            dgv_hoaDon.Rows.Clear();  // Xóa tất cả các hàng hiện có trong DataGridView
+
+            foreach (var item in hoaDonList)
+            {
+                // Thêm dòng vào DataGridView
+                dgv_hoaDon.Rows.Add(item.Name, item.SoLuong, item.ThanhTien, item.KhuyenMai);
+            }
         }
 
         private void UpdateHoaDon(HoaDon hoaDon)
         {
             hoaDon.MaHoaDon = txtMaHoaDon.Text;
-            hoaDon.NgayVao = dtpNgayVao.Value;
             hoaDon.MaNhanVien = txtMaNhanVien.Text;
             hoaDon.MaKhachHang = txtMaKhachHang.Text;
-            hoaDon.TenKhachHang = txtTenKhachHang.Text;
         }
 
         private void DeleteHoaDon(HoaDon hoaDon)
         {
             hoaDon.MaHoaDon = null;
-            hoaDon.NgayVao = DateTime.Now;
             hoaDon.MaNhanVien = null;
             hoaDon.MaKhachHang = null;
-            hoaDon.TenKhachHang = null;
+
+            txtMaHoaDon.Text = "";
+            txtMaNhanVien.Text = "";
+            txtMaKhachHang.Text = "";
+            SetupDataGridView();
         }
 
         // Hàm để lấy giá tiền từ cơ sở dữ liệu dựa trên tên sản phẩm
         private decimal GetGiaTien(string tenSanPham)
         {
-            // Câu truy vấn SQL để lấy giá tiền
-            string query = $"SELECT GiaBan FROM SANPHAM WHERE TenSp = '{tenSanPham}'";
+            // Tìm mã sản phẩm từ tên sản phẩm trong Dictionary
+            string maSanPham = columnMappings.FirstOrDefault(x => x.Value == tenSanPham).Key;
+
+            if (string.IsNullOrEmpty(maSanPham))
+            {
+                // Nếu không tìm thấy mã sản phẩm tương ứng với tên sản phẩm, trả về giá trị 0
+                return 0;
+            }
+
+            // Câu truy vấn SQL để lấy giá tiền từ cơ sở dữ liệu, sử dụng mã sản phẩm
+            string query = $"SELECT GiaBan FROM SANPHAM WHERE MaSP = '{maSanPham}'";
 
             // Sử dụng DataConnect để thực hiện câu truy vấn
             DataTable dt = dataProcess.DataConnect(query);
@@ -209,102 +251,106 @@ namespace BTLBinh
                 // Nếu tìm thấy kết quả, chuyển đổi giá trị thành decimal
                 return Convert.ToDecimal(dt.Rows[0]["GiaBan"]);
             }
-            else return 0;
+            else
+            {
+                // Nếu không tìm thấy, trả về 0
+                return 0;
+            }
         }
 
-        private void addDataGridView()
+        private void CalculateTotalAmount()
         {
+            decimal totalAmount = 0;
 
-            int soLuong1 = menu.GetNumCapheDen();
-            int soLuong2 = menu.GetNumCapheSua();
-            int soLuong3 = menu.GetNumTraSuaTranChau();
-            int soLuong4 = menu.GetNumSinhToDau();
-            int soLuong5 = menu.GetNumNuocCamEp();
-            int soLuong6 = menu.GetNumSodaChanh();
-            int soLuong7 = menu.GetNumBanhNgotDau();
-            int soLuong8 = menu.GetNumBanhMiThit();
-            int soLuong9 = menu.GetNumPizza();
-            int soLuong10 = menu.GetNumSalad();
-            int soLuong11 = menu.GetNumHamburger();
-            int soLuong12 = menu.GetNumKemDua();
-            int soLuong13 = menu.GetNumNuocEpTao();
-            int soLuong14 = menu.GetNumCaPheDaXay();
-            int soLuong15 = menu.GetNumTraSuaMatcha();
+            // Đảm bảo vòng lặp này có biến 'row' là đúng
+            foreach (DataGridViewRow row in dgv_hoaDon.Rows)
+            {
+                // Kiểm tra xem dòng có bị bỏ trống hay không
+                if (row.IsNewRow) continue;
 
-            decimal giaTien1 = 0;
-            decimal giaTien2 = 0;
-            decimal giaTien3 = 0;
-            decimal giaTien4 = 0;
-            decimal giaTien5 = 0;
-            decimal giaTien6 = 0;
-            decimal giaTien7 = 0;
-            decimal giaTien8 = 0;
-            decimal giaTien9 = 0;
-            decimal giaTien10 = 0;
-            decimal giaTien11 = 0;
-            decimal giaTien12 = 0;
-            decimal giaTien13 = 0;
-            decimal giaTien14 = 0;
-            decimal giaTien15 = 0;
+                decimal thanhTien = 0;
+                string thanhTienValue = row.Cells[2].Value?.ToString();
+                Console.WriteLine($"Thành tiền trong cột: {thanhTienValue}");
 
-            giaTien1 = GetGiaTien(menu.getCaPheDen());
-            giaTien2 = GetGiaTien(menu.getCaPheSua());
-            giaTien3 = GetGiaTien(menu.getTraSuaTranChau());
-            giaTien4 = GetGiaTien(menu.getSinhToDau());
-            giaTien5 = GetGiaTien(menu.getNuocCamEp());
-            giaTien6 = GetGiaTien(menu.getSodaChanh());
-            giaTien7 = GetGiaTien(menu.getBanhNgotDau());
-            giaTien8 = GetGiaTien(menu.getBanhMiThit());
-            giaTien9 = GetGiaTien(menu.getPizza());
-            giaTien10 = GetGiaTien(menu.getSalad());
-            giaTien11 = GetGiaTien(menu.getHamburger());
-            giaTien12 = GetGiaTien(menu.getKemDua());
-            giaTien13 = GetGiaTien(menu.getNuocEpTao());
-            giaTien14 = GetGiaTien(menu.getCaPheDaXay());
-            giaTien15 = GetGiaTien(menu.getTraSuaMatcha());
+                if (decimal.TryParse(thanhTienValue, out thanhTien))
+                {
+                    Console.WriteLine($"Thành tiền đã chuyển đổi: {thanhTien}");
 
+                    decimal khuyenMai = 0;
+                    string khuyenMaiValue = row.Cells[3].Value?.ToString();
+                    Console.WriteLine($"Khuyến mãi trong cột: {khuyenMaiValue}");
 
+                    if (decimal.TryParse(khuyenMaiValue, out khuyenMai))
+                    {
+                        Console.WriteLine($"Khuyến mãi: {khuyenMai}%");
+
+                        decimal thanhTienSauKhuyenMai = thanhTien * (1 - khuyenMai / 100);
+                        totalAmount += thanhTienSauKhuyenMai;
+                    }
+                    else
+                    {
+                        totalAmount += thanhTien;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Thành tiền không hợp lệ");
+                }
+            }
+
+            // Cập nhật tổng tiền vào TextBox
+            txtTongTien.Text = totalAmount.ToString("N0");
+
+            Console.WriteLine($"Tổng tiền: {totalAmount}");
         }
 
-        //private void addDataGridView()
-        //{
-        //    // Khởi tạo danh sách để chứa các món
-        //    List<OrderItem> orderItems = new List<OrderItem>
-        //    {
-        //        new OrderItem { Name = "Cà phê đen", SoLuong = menu.GetNumCapheDen(), GiaTien = GetGiaTien(menu.getCaPheDen()), KhuyenMai = 0 },
-        //        new OrderItem { Name = "Cà phê sữa", SoLuong = menu.GetNumCapheSua(), GiaTien = GetGiaTien(menu.getCaPheSua()), KhuyenMai = 0 },
-        //        new OrderItem { Name = "Trà sữa trân châu", SoLuong = menu.GetNumTraSuaTranChau(), GiaTien = GetGiaTien(menu.getTraSuaTranChau()), KhuyenMai = 0 },
-        //        new OrderItem { Name = "Sinh tố dâu", SoLuong = menu.GetNumSinhToDau(), GiaTien = GetGiaTien(menu.getSinhToDau()), KhuyenMai = 0 },
-        //        new OrderItem { Name = "Nước cam ép", SoLuong = menu.GetNumNuocCamEp(), GiaTien = GetGiaTien(menu.getNuocCamEp()), KhuyenMai = 0 },
-        //        new OrderItem { Name = "Soda chanh", SoLuong = menu.GetNumSodaChanh(), GiaTien = GetGiaTien(menu.getSodaChanh()), KhuyenMai = 0 },
-        //        new OrderItem { Name = "Bánh ngọt dâu", SoLuong = menu.GetNumBanhNgotDau(), GiaTien = GetGiaTien(menu.getBanhNgotDau()), KhuyenMai = 0 },
-        //        new OrderItem { Name = "Bánh mì thịt", SoLuong = menu.GetNumBanhMiThit(), GiaTien = GetGiaTien(menu.getBanhMiThit()), KhuyenMai = 0 },
-        //        new OrderItem { Name = "Pizza", SoLuong = menu.GetNumPizza(), GiaTien = GetGiaTien(menu.getPizza()), KhuyenMai = 0 },
-        //        new OrderItem { Name = "Salad", SoLuong = menu.GetNumSalad(), GiaTien = GetGiaTien(menu.getSalad()), KhuyenMai = 0 },
-        //        new OrderItem { Name = "Hamburger", SoLuong = menu.GetNumHamburger(), GiaTien = GetGiaTien(menu.getHamburger()), KhuyenMai = 0 },
-        //        new OrderItem { Name = "Kem dừa", SoLuong = menu.GetNumKemDua(), GiaTien = GetGiaTien(menu.getKemDua()), KhuyenMai = 0 },
-        //        new OrderItem { Name = "Nước ép táo", SoLuong = menu.GetNumNuocEpTao(), GiaTien = GetGiaTien(menu.getNuocEpTao()), KhuyenMai = 0 },
-        //        new OrderItem { Name = "Cà phê đá xay", SoLuong = menu.GetNumCaPheDaXay(), GiaTien = GetGiaTien(menu.getCaPheDaXay()), KhuyenMai = 0 },
-        //        new OrderItem { Name = "Trà sữa matcha", SoLuong = menu.GetNumTraSuaMatcha(), GiaTien = GetGiaTien(menu.getTraSuaMatcha()), KhuyenMai = 0 }
-        //    };
+        private void SaveDataToList(List<OrderItem> hoaDonList)
+        {
+            hoaDonList.Clear(); // Xóa danh sách hiện tại để tránh trùng dữ liệu
 
-        //    if (menu.Submit == true)
-        //    {
-        //        // Duyệt qua các món trong danh sách và thêm vào DataGridView nếu SoLuong > 0
-        //        foreach (var item in orderItems)
-        //        {
-        //            if (item.SoLuong > 0)
-        //            {
-        //                dgv_hoaDon.Rows.Add(item.Name, item.SoLuong, item.GiaTien, item.KhuyenMai);
-        //            }
-        //        }
-        //        menu.Submit = false;
-        //    }
+            foreach (DataGridViewRow row in dgv_hoaDon.Rows)
+            {
+                // Kiểm tra nếu dòng không phải là dòng mới (dòng trống)
+                if (row.IsNewRow) continue;
 
-        //}
+                // Lấy thông tin từ các cột
+                string sanPham = row.Cells[0].Value?.ToString();
+                int soLuong = 0;
+                decimal thanhTien = 0;
+                decimal khuyenMai = 0;
+
+                // Kiểm tra nếu số lượng hợp lệ
+                if (int.TryParse(row.Cells[1].Value?.ToString(), out soLuong))
+                {
+                    thanhTien = Convert.ToDecimal(row.Cells[2].Value);
+                }
+
+                // Kiểm tra nếu khuyến mãi hợp lệ
+                if (decimal.TryParse(row.Cells[3].Value?.ToString(), out khuyenMai))
+                {
+                    // Tạo đối tượng OrderItem từ dữ liệu của dòng
+                    var orderItem = new OrderItem
+                    {
+                        Name = sanPham,
+                        SoLuong = soLuong,
+                        ThanhTien = thanhTien,
+                        KhuyenMai = khuyenMai
+                    };
+
+                    // Thêm đối tượng vào danh sách
+                    hoaDonList.Add(orderItem);
+                }
+            }
+
+            // Debug: In danh sách hoaDonList ra Console để kiểm tra
+            foreach (var item in hoaDonList)
+            {
+                Console.WriteLine($"Sản phẩm: {item.Name}, Số lượng: {item.SoLuong}, Thành tiền: {item.ThanhTien}, Khuyến mãi: {item.KhuyenMai}");
+            }
+        }
 
 
-        //--------------------------------------------------------------------------------------------
+        //------------------------------------------------------------------------------------------
 
         private void txtLuuThongTin_Click(object sender, EventArgs e)
         {
@@ -322,56 +368,65 @@ namespace BTLBinh
                 if (lbSoBan.Text == "Bàn số 01")
                 {
                     UpdateHoaDon(hoaDon01);
+                    SaveDataToList(hoaDonList1);
                     checkBan01 = true;
-                    MessageBox.Show("Lưu thông thành công");
+                    MessageBox.Show("Lưu thành công");
                 }
                 else if (lbSoBan.Text == "Bàn số 02")
                 {
                     UpdateHoaDon(hoaDon02);
+                    SaveDataToList(hoaDonList2);
                     checkBan02 = true;
-                    MessageBox.Show("Lưu thông thành công");
+                    MessageBox.Show("Lưu thành công");
                 }
                 else if (lbSoBan.Text == "Bàn số 03")
                 {
                     UpdateHoaDon(hoaDon03);
+                    SaveDataToList(hoaDonList3);
                     checkBan03 = true;
-                    MessageBox.Show("Lưu thông thành công");
+                    MessageBox.Show("Lưu thành công");
                 }
                 else if (lbSoBan.Text == "Bàn số 04")
                 {
                     UpdateHoaDon(hoaDon04);
+                    SaveDataToList(hoaDonList4);
                     checkBan04 = true;
-                    MessageBox.Show("Lưu thông thành công");
+                    MessageBox.Show("Lưu thành công");
                 }
                 else if (lbSoBan.Text == "Bàn số 05")
                 {
                     UpdateHoaDon(hoaDon05);
+                    SaveDataToList(hoaDonList5);
                     checkBan05 = true;
-                    MessageBox.Show("Lưu thông thành công");
+                    MessageBox.Show("Lưu thành công");
                 }
                 else if (lbSoBan.Text == "Bàn số 06")
                 {
                     UpdateHoaDon(hoaDon06);
+                    SaveDataToList(hoaDonList6);
                     checkBan06 = true;
-                    MessageBox.Show("Lưu thông thành công");
+                    MessageBox.Show("Lưu thành công");
                 }
                 else if (lbSoBan.Text == "Bàn số 07")
                 {
                     UpdateHoaDon(hoaDon07);
+                    SaveDataToList(hoaDonList7);
                     checkBan07 = true;
-                    MessageBox.Show("Lưu thông thành công");
+                    MessageBox.Show("Lưu thành công");
                 }
                 else if (lbSoBan.Text == "Bàn số 08")
                 {
                     UpdateHoaDon(hoaDon08);
+                    SaveDataToList(hoaDonList8);
                     checkBan08 = true;
-                    MessageBox.Show("Lưu thông thành công");
+                    MessageBox.Show("Lưu thành công");
                 }
                 else if (lbSoBan.Text == "Bàn số 09")
                 {
                     UpdateHoaDon(hoaDon09);
+                    SaveDataToList(hoaDonList9);
                     checkBan09 = true;
-                    MessageBox.Show("Lưu thông thành công");
+                    MessageBox.Show("Lưu thành công");
                 }
             }
             // Nếu chọn No, không thực hiện gì thêm
@@ -392,7 +447,7 @@ namespace BTLBinh
 
             if (checkBan01 == true)
             {
-                LoadHoaDon(hoaDon01);
+                LoadHoaDon(hoaDon01, hoaDonList1);
             }
         }
 
@@ -404,7 +459,7 @@ namespace BTLBinh
 
             if (checkBan02 == true)
             {
-                LoadHoaDon(hoaDon02);
+                LoadHoaDon(hoaDon02, hoaDonList2);
             }
         }
 
@@ -416,7 +471,7 @@ namespace BTLBinh
 
             if (checkBan03 == true)
             {
-                LoadHoaDon(hoaDon03);
+                LoadHoaDon(hoaDon03, hoaDonList3);
             }
         }
 
@@ -428,7 +483,7 @@ namespace BTLBinh
 
             if (checkBan04 == true)
             {
-                LoadHoaDon(hoaDon04);
+                LoadHoaDon(hoaDon04, hoaDonList4);
             }
         }
 
@@ -440,7 +495,7 @@ namespace BTLBinh
 
             if (checkBan05 == true)
             {
-                LoadHoaDon(hoaDon05);
+                LoadHoaDon(hoaDon05, hoaDonList5);
             }
         }
 
@@ -452,7 +507,7 @@ namespace BTLBinh
 
             if (checkBan06 == true)
             {
-                LoadHoaDon(hoaDon06);
+                LoadHoaDon(hoaDon06, hoaDonList6);
             }
         }
 
@@ -464,7 +519,7 @@ namespace BTLBinh
 
             if (checkBan07 == true)
             {
-                LoadHoaDon(hoaDon07);
+                LoadHoaDon(hoaDon07, hoaDonList7);
             }
         }
 
@@ -476,7 +531,7 @@ namespace BTLBinh
 
             if (checkBan08 == true)
             {
-                LoadHoaDon(hoaDon08);
+                LoadHoaDon(hoaDon08, hoaDonList8);
             }
         }
 
@@ -488,7 +543,7 @@ namespace BTLBinh
 
             if (checkBan09 == true)
             {
-                LoadHoaDon(hoaDon09);
+                LoadHoaDon(hoaDon09, hoaDonList9);
             }
         }
 
@@ -585,5 +640,63 @@ namespace BTLBinh
             // Hoặc bạn có thể dùng giá trị từ các điều khiển khác như TextBox nếu muốn
             // Ví dụ: dataGridView1.Rows[index].Cells["Column1"].Value = textBox1.Text;
         }
+
+        private void dgv_hoaDon_CellEndEdit_1(object sender, DataGridViewCellEventArgs e)
+        {
+            // Kiểm tra xem người dùng vừa hoàn thành chỉnh sửa cột "Tên sản phẩm" (giả sử, cột thứ 0)
+            if (e.ColumnIndex == 0 || e.ColumnIndex == 1 || e.ColumnIndex == 3) // Nếu là cột "Sản phẩm", "Số lượng" hoặc "Khuyến mãi"
+            {
+                string tenSP = dgv_hoaDon.Rows[e.RowIndex].Cells[0].Value?.ToString();
+                int soLuong = 0;
+                decimal gia = 0;
+
+                if (!string.IsNullOrEmpty(tenSP))
+                {
+                    // Truy vấn giá từ cơ sở dữ liệu dựa trên tên sản phẩm
+                    gia = GetGiaTien(tenSP);
+                }
+
+                // Lấy số lượng từ cột "Số lượng" (cột thứ 1)
+                if (int.TryParse(dgv_hoaDon.Rows[e.RowIndex].Cells[1].Value?.ToString(), out soLuong))
+                {
+                    // Tính thành tiền = Số lượng * Giá
+                    decimal thanhTien = gia * soLuong;
+
+                    // Cập nhật ô "Thành tiền" (cột thứ 2)
+                    dgv_hoaDon.Rows[e.RowIndex].Cells[2].Value = thanhTien;
+                }
+
+                // Gọi hàm tính tổng tiền sau khi cập nhật "Thành tiền"
+                CalculateTotalAmount();
+            }
+        }
+
+        private void btXoa_Click(object sender, EventArgs e)
+        {
+            // Kiểm tra xem có dòng nào được chọn không
+            if (dgv_hoaDon.SelectedRows.Count > 0)
+            {
+                // Hiển thị hộp thoại xác nhận
+                DialogResult result = MessageBox.Show("Bạn có chắc chắn muốn xóa dòng này?", "Xác nhận xóa", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                // Nếu người dùng chọn "Yes"
+                if (result == DialogResult.Yes)
+                {
+                    // Lấy chỉ số của dòng được chọn
+                    int rowIndex = dgv_hoaDon.SelectedRows[0].Index;
+
+                    // Xóa dòng khỏi DataGridView
+                    dgv_hoaDon.Rows.RemoveAt(rowIndex);
+
+                    // Tính lại tổng tiền sau khi xóa dòng
+                    CalculateTotalAmount();
+                }
+            }
+            else
+            {
+                MessageBox.Show("Vui lòng chọn một dòng để xóa.");
+            }
+        }
+
     }
 }

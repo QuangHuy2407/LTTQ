@@ -10,7 +10,7 @@ namespace BTLBinh
     {
         public string Name { get; set; }          // Tên món
         public int SoLuong { get; set; }          // Số lượng
-        public decimal GiaTien { get; set; }      // Giá tiền
+        public decimal ThanhTien { get; set; }      // Giá tiền
         public decimal KhuyenMai { get; set; } = 0; // Khuyến mãi (mặc định là 0)
     }
 

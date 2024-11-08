@@ -9,16 +9,14 @@ namespace BTLBinh
     public class HoaDon
     {
         public string MaHoaDon { get; set; }
-        public DateTime NgayVao { get; set; }
         public string MaNhanVien { get; set; }
         public string MaKhachHang { get; set; }
         public string TenKhachHang { get; set; }
 
         // Constructor để khởi tạo đối tượng HoaDon
-        public HoaDon(string maHoaDon, DateTime ngayVao, string maNhanVien, string maKhachHang, string tenKhachHang)
+        public HoaDon(string maHoaDon, string maNhanVien, string maKhachHang, string tenKhachHang)
         {
             MaHoaDon = maHoaDon;
-            NgayVao = ngayVao;
             MaNhanVien = maNhanVien;
             MaKhachHang = maKhachHang;
             TenKhachHang = tenKhachHang;
@@ -36,7 +34,6 @@ namespace BTLBinh
         public void Display()
         {
             Console.WriteLine($"Mã Hóa Đơn: {MaHoaDon}");
-            Console.WriteLine($"Ngày Vào: {NgayVao}");
             Console.WriteLine($"Mã Nhân Viên: {MaNhanVien}");
             Console.WriteLine($"Mã Khách Hàng: {MaKhachHang}");
             Console.WriteLine($"Tên Khách Hàng: {TenKhachHang}");
